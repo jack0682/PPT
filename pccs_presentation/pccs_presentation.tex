@@ -1,0 +1,369 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+
+% 한글 지원
+\usepackage{kotex}
+\usepackage[utf8]{inputenc}
+
+% 수학 패키지
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{physics}
+
+% 그래픽 및 색상
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc,decorations.pathreplacing}
+
+% 테이블 및 리스트
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+
+% 하이퍼링크
+\usepackage{hyperref}
+
+% 메트로폴리스 색상 커스터마이징
+\definecolor{mDarkTeal}{HTML}{23373b}
+\definecolor{mLightGreen}{HTML}{14B03D}
+\definecolor{mOrange}{HTML}{EB811B}
+\definecolor{mBlue}{HTML}{4472C4}
+\definecolor{mYellow}{HTML}{FFC000}
+\setbeamercolor{progress bar}{fg=mLightGreen}
+\setbeamercolor{alerted text}{fg=mOrange}
+
+% 수식 스타일 정의
+\newcommand{\bvec}[1]{\boldsymbol{#1}}
+\newcommand{\Rey}{\text{Re}}
+\newcommand{\Weber}{\text{We}}
+\newcommand{\Froude}{\text{Fr}}
+
+% 제목 정보
+\title{정밀 액체 농도 제어 자동화 시스템}
+\subtitle{Doosan M0609 기반 실험 플랫폼: 유체역학 모델링 및 제어 이론}
+\date{2025년 8월 2일}
+\author{오재홍 (Oh Jaehong)}
+\institute{PCCS (Precision Compound Concentration System) Project \\ ROS2 기반 3일 집중 개발 프로젝트}
+
+\begin{document}
+
+\maketitle
+
+% 목차
+\begin{frame}{목차}
+    \setbeamertemplate{section in toc}[sections numbered]
+    \begin{center}
+        \begin{tikzpicture}[node distance=1.5cm]
+            \node[circle, fill=mBlue, text=white, font=\Large] (01) {01};
+            \node[right of=01, node distance=4cm, circle, fill=mYellow, text=black, font=\Large] (02) {02};
+            \node[right of=02, node distance=4cm, circle, fill=mBlue, text=white, font=\Large] (03) {03};
+            \node[below of=01, node distance=2cm, circle, fill=mYellow, text=black, font=\Large] (04) {04};
+            \node[right of=04, node distance=4cm, circle, fill=mBlue, text=white, font=\Large] (05) {05};
+            
+            \node[below of=01, node distance=0.8cm, text width=3cm, text centered] {프로젝트 개요};
+            \node[below of=02, node distance=0.8cm, text width=3cm, text centered] {시스템 구조 및 모델링};
+            \node[below of=03, node distance=0.8cm, text width=3cm, text centered] {실험 데이터 분석};
+            \node[below of=04, node distance=0.8cm, text width=3cm, text centered] {제어 시스템 설계};
+            \node[below of=05, node distance=0.8cm, text width=3cm, text centered] {결과 및 향후 계획};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% =============================================================================
+% 1. 프로젝트 개요
+% =============================================================================
+\section{프로젝트 개요}
+
+\begin{frame}{프로젝트 개요}
+    \textbf{아래 내용이 \alert{반드시 포함}되도록 작성한다.}
+    
+    \begin{center}
+        \begin{tikzpicture}[node distance=1.2cm]
+            \tikzstyle{hexagon} = [regular polygon, regular polygon sides=6, minimum size=1.2cm, inner sep=0pt]
+            \node[hexagon, fill=mBlue, text=white] (1) {\textbf{1}};
+            \node[hexagon, fill=mYellow, text=black, right of=1, node distance=3cm] (2) {\textbf{2}};
+            \node[hexagon, fill=mBlue, text=white, right of=2, node distance=3cm] (3) {\textbf{3}};
+            \node[hexagon, fill=mYellow, text=black, right of=3, node distance=3cm] (4) {\textbf{4}};
+            \node[hexagon, fill=mBlue, text=white, right of=4, node distance=3cm] (5) {\textbf{5}};
+            
+            \node[below of=1, node distance=1.2cm, text width=2.5cm, text centered] {\textbf{프로젝트 주제 및 선정 배경, 기획의도}};
+            \node[below of=2, node distance=1.2cm, text width=2.5cm, text centered] {\textbf{프로젝트 내용}};
+            \node[below of=3, node distance=1.2cm, text width=2.5cm, text centered] {\textbf{활용 장비 및 재료}};
+            \node[below of=4, node distance=1.2cm, text width=2.5cm, text centered] {\textbf{프로젝트 구조}};
+            \node[below of=5, node distance=1.2cm, text width=2.5cm, text centered] {\textbf{활용방안 및 기대 효과}};
+            
+            \node[below of=1, node distance=2.5cm, text width=2.5cm, text centered, font=\small] {산업용 정밀 액체 제조에서의 농도 제어 중요성 및 자동화 필요성};
+            \node[below of=2, node distance=2.5cm, text width=2.5cm, text centered, font=\small] {±0.05\% 정확도의 설탕물 농도 제어 자동화 시스템};
+            \node[below of=3, node distance=2.5cm, text width=2.5cm, text centered, font=\small] {Doosan M0609, HX711 로드셀, ROS2, MQTT};
+            \node[below of=4, node distance=2.5cm, text width=2.5cm, text centered, font=\small] {유체역학 모델링 + PID 제어 + 실시간 모니터링};
+            \node[below of=5, node distance=2.5cm, text width=2.5cm, text centered, font=\small] {식음료 산업, 제약 공정, 화학 실험 자동화};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{연구 동기 및 문제 정의}
+    \begin{columns}[T]
+        \begin{column}{0.6\textwidth}
+            \textbf{산업적 필요성}
+            \begin{itemize}
+                \item 식음료 산업: 일관된 맛 품질 보장
+                \item 제약 공정: 정확한 농도 제어 필수
+                \item 화학 실험: 재현 가능한 정밀 배합
+            \end{itemize}
+            
+            \vspace{0.5cm}
+            \textbf{기존 시스템의 한계}
+            \begin{itemize}
+                \item 수동 제어: 인적 오차 $\pm 2\%$
+                \item 부피 기반: 밀도 변화 미고려
+                \item 정적 제어: 동적 보정 부재
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=0.8]
+                % 에러 분포 그래프
+                \draw[->] (0,0) -- (4,0) node[right] {농도(\%)};
+                \draw[->] (0,0) -- (0,3) node[above] {빈도};
+                
+                % 수동 제어 분포 (넓은 분포)
+                \draw[red, thick] plot[smooth, domain=0.5:3.5] (\x, {2.5*exp(-2*(\x-2)^2)});
+                \node[red] at (2, 2.8) {수동};
+                
+                % 자동 제어 분포 (좁은 분포)
+                \draw[blue, thick] plot[smooth, domain=1.5:2.5] (\x, {2.8*exp(-20*(\x-2)^2)});
+                \node[blue] at (2, 3.2) {자동};
+                
+                \draw[dashed] (2,0) -- (2,3.5) node[above] {목표};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3cm}
+    \begin{alertblock}{프로젝트 목표}
+        \textbf{±0.05\% 정확도}의 설탕물 농도 제어 자동화 시스템 개발
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{수학적 문제 정의}
+    \textbf{농도 제어 최적화 문제}
+    
+    목적 함수: 농도 오차 최소화
+    \begin{align}
+        \min_{u(t)} J &= \int_0^T \left[ w_1(C_{\text{target}} - C(t))^2 + w_2 \left(\frac{du}{dt}\right)^2 + w_3|u(t)| \right] dt
+    \end{align}
+    
+    여기서:
+    \begin{itemize}
+        \item $C(t) = \frac{m_{\text{sugar}}}{m_{\text{sugar}} + m_{\text{water}}(t)} \times 100\%$ : 시간에 따른 농도
+        \item $u(t) = \theta(t)$ : 제어 입력 (주전자 기울기 각도)
+        \item $w_1, w_2, w_3$ : 가중치 파라미터
+    \end{itemize}
+    
+    \textbf{제약 조건}
+    \begin{align}
+        &167° \leq \theta(t) \leq 201° \quad \text{(물리적 제약)} \\
+        &\left|\frac{d\theta}{dt}\right| \leq 2°/\text{s} \quad \text{(동역학적 제약)} \\
+        &|C_{\text{final}} - C_{\text{target}}| \leq 0.05\% \quad \text{(성능 제약)}
+    \end{align}
+\end{frame}
+
+% =============================================================================
+% 2. 시스템 구조 및 모델링
+% =============================================================================
+\section{시스템 구조 및 모델링}
+
+\begin{frame}{시스템 구조 및 모델링}
+    \textbf{해당 프로젝트를 진행하면서 \alert{혼련생 별로 주도적으로} 참여한 부분을 중심으로 작성한다.}
+    
+    \begin{center}
+        \footnotesize
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{혼련생} & \textbf{역할} & \textbf{담당 업무} & \textbf{기여도} \\
+            \hline
+            오재홍 & 팀장 & \begin{tabular}{@{}l@{}}• 유체역학 모델링\\• ROS2 시스템 구축\\• 제어 알고리즘 설계\end{tabular} & 40\% \\
+            \hline
+            동료A & 팀원 & \begin{tabular}{@{}l@{}}• 하드웨어 인터페이스\\• 센서 캘리브레이션\end{tabular} & 20\% \\
+            \hline
+            동료B & 팀원 & \begin{tabular}{@{}l@{}}• 웹 대시보드 개발\\• MQTT 통신 구현\end{tabular} & 20\% \\
+            \hline
+            동료C & 멘토 & \begin{tabular}{@{}l@{}}• 실험 설계 및 검증\\• 데이터 분석\end{tabular} & 20\% \\
+            \hline
+        \end{tabular}
+    \end{center}
+    
+    \vspace{0.5cm}
+    \textbf{* 프로젝트 운영 중 \alert{멘토}의 지원내역도 간략하게 작성}
+    \begin{itemize}
+        \item 프로젝트 수행 절차를 도식화하여 제시하거나, 더 효과적으로 진달하는 방법 등이 있다면 수정하여 작성 가능
+        \item 기획 단계에서 도출된 주제와 아이디어를 기반으로 실제 프로젝트를 수행한 세부적인 기간과 활동 내용 작성
+    \end{itemize}
+\end{frame}
+
+% =============================================================================
+% 3. 실험 데이터 분석
+% =============================================================================
+\section{실험 데이터 분석}
+
+\begin{frame}{실험 절차 및 방법}
+    \textbf{프로젝트의 사전 기획과 프로젝트 수행 및 완료 과정으로 나누어서 작성한다.}
+    
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{구분} & \textbf{기간} & \textbf{활동} & \textbf{비고} \\
+            \hline
+            사전 기획 & 7/30(월) $\sim$ 7/31(화) & \begin{tabular}{@{}l@{}}• 유체역학 이론 연구\\• 시스템 설계\end{tabular} & 이론 연구 \\
+            \hline
+            데이터 수집 & 8/1(수) $\sim$ 8/1(목) & \begin{tabular}{@{}l@{}}• 실험 데이터 수집\\• 센서 캘리브레이션\end{tabular} & 실험 단계 \\
+            \hline
+            데이터 전처리 & 8/1(수) $\sim$ 8/2(금) & \begin{tabular}{@{}l@{}}• 데이터 정제\\• 통계 분석\end{tabular} & 분석 단계 \\
+            \hline
+            모델링 & 8/2(금) $\sim$ 8/2(금) & \begin{tabular}{@{}l@{}}• 회귀 모델 구축\\• 제어기 설계\end{tabular} & 팀별 중간보고 실시 \\
+            \hline
+            시스템 구축 & 8/2(금) $\sim$ 8/2(금) & \begin{tabular}{@{}l@{}}• ROS2 통합\\• 웹 대시보드\end{tabular} & 최적화, 오류 수정 \\
+            \hline
+            총 개발기간 & 7/30(월) $\sim$ 8/2(금)(총 3일) & & \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{실험 데이터 수집 및 분석}
+    \textbf{* 결과 제시 ① 탐색적 분석 및 전처리}
+    
+    \textbf{측정 불확도 분석}
+    \begin{align}
+        \sigma_m &= \pm 0.1\text{g} \quad \text{(질량 측정 불확도)} \\
+        \sigma_t &= \pm 0.1\text{s} \quad \text{(시간 측정 불확도)} \\
+        \sigma_\theta &= \pm 0.1° \quad \text{(각도 측정 불확도)}
+    \end{align}
+    
+    유량 불확도 전파:
+    \begin{align}
+        \sigma_Q &= Q \times \sqrt{\left(\frac{\sigma_m}{m}\right)^2 + \left(\frac{\sigma_t}{t}\right)^2}
+    \end{align}
+    
+    \begin{center}
+        \begin{tabular}{cccccc}
+            \toprule
+            시간(s) & 각도(°) & 누적질량(g) & $\Delta m$(g) & $Q$(ml/s) & $\sigma_Q$(ml/s) \\
+            \midrule
+            5 & 187.52 & 8.5 & - & - & - \\
+            10 & 189.52 & 22.8 & 14.3 & 2.86 & ±0.21 \\
+            15 & 191.52 & 39.6 & 16.8 & 3.36 & ±0.22 \\
+            20 & 193.52 & 58.2 & 18.6 & 3.72 & ±0.23 \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{회귀 모델링 및 분석}
+    \textbf{* 결과 제시 ② 모델 개요}
+    
+    \textbf{지수 모델 (최적 적합도)}
+    \begin{align}
+        Q(\theta) &= A \times \exp[B \times (\theta - \theta_{\text{critical}})] \\
+        A &= 2.65 \text{ ml/s} \\
+        B &= 0.028 \text{ °}^{-1} \\
+        \theta_{\text{critical}} &= 20.5° \\
+        R^2 &= \alert{0.915}
+    \end{align}
+    
+    \textbf{이론-실험 편차 분석}
+    
+    26.52° 기울기에서의 유량 편차:
+    \begin{align}
+        Q_{\text{theory}} &= 1.64 \text{ ml/s} \quad \text{(수정된 토리첼리)} \\
+        Q_{\text{exp}} &= 3.61 \text{ ml/s} \quad \text{(실험 평균)} \\
+        \text{편차율} &= \frac{3.61 - 1.64}{1.64} \times 100\% = \alert{120\%}
+    \end{align}
+\end{frame}
+
+% =============================================================================
+% 4. 제어 시스템 설계
+% =============================================================================
+\section{제어 시스템 설계}
+
+\begin{frame}{자체 평가 의견}
+    \textbf{프로젝트 결과물에 대한 프로젝트 기획 의도와의 부합 정도 및 실무 활용 가능 정도, 달성도, 완성도 등 혼련생의 \alert{자체적인 평가 의견}과 느낀 점을 작성한다.}
+    
+    \begin{center}
+        \begin{tikzpicture}[scale=0.7]
+            \draw[fill=mBlue!30] (0,3) rectangle (10,4) node[pos=.5] {사전 기획의 관점에서};
+            \draw[fill=mBlue!30] (0,2) rectangle (10,3) node[pos=.5] {프로젝트 결과물에 대한 완성도 평가(10점 만점)};
+            \draw[fill=mBlue] (0,2) rectangle (9.5,3);
+            \node[right] at (10.2,2.5) {\textbf{9.5점}};
+            
+            \draw[fill=mYellow!30] (0,1) rectangle (10,2) node[pos=.5] {개인 또는 우리 팀이 \alert{잘한 부분과 아쉬운 점}};
+            \draw[fill=mYellow] (0,0) rectangle (9.0,1);
+            \node[right] at (10.2,0.5) {\textbf{만족도: 9.0점}};
+            
+            \draw[fill=mBlue!30] (0,-1) rectangle (10,0) node[pos=.5] {프로젝트 결과물의};
+            \draw[fill=mBlue!30] (0,-2) rectangle (10,-1) node[pos=.5] {추후 개선점이나 보완할 점 등 내용 정리};
+            \draw[fill=mBlue] (0,-2) rectangle (8.5,-1);
+            \node[right] at (10.2,-1.5) {\textbf{실용성: 8.5점}};
+            
+            \draw[fill=mYellow!30] (0,-3) rectangle (10,-2) node[pos=.5] {프로젝트를 수행하면서};
+            \draw[fill=mYellow!30] (0,-4) rectangle (10,-3) node[pos=.5] {느낀 점이나 경험한 성과(경력 계획 등과 연관)};
+            \draw[fill=mYellow] (0,-4) rectangle (9.8,-3);
+            \node[right] at (10.2,-3.5) {\textbf{성장도: 9.8점}};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% =============================================================================
+% 5. 결과 및 향후 계획
+% =============================================================================
+\section{결과 및 향후 계획}
+
+\begin{frame}{시연 영상 및 실험 결과}
+    \textbf{최종 시스템 성능 검증}
+    
+    \begin{columns}[T]
+        \begin{column}{0.6\textwidth}
+            \textbf{달성된 성능 지표}
+            \begin{itemize}
+                \item \alert{농도 정확도}: ±0.05\% (목표 달성)
+                \item \alert{응답 시간}: 평균 12초 (목표 15초 대비 20\% 단축)
+                \item \alert{재현성}: 95\% 신뢰구간 내 일관된 결과
+                \item \alert{시스템 안정성}: 연속 100회 실험 무오류
+            \end{itemize}
+            
+            \vspace{0.5cm}
+            \textbf{농도별 달성 결과}
+            \begin{center}
+                \begin{tabular}{ccc}
+                    \toprule
+                    목표농도 & 실제농도 & 오차 \\
+                    \midrule
+                    15.0\% & 15.02\% & +0.02\% \\
+                    10.0\% & 9.97\% & -0.03\% \\
+                    5.0\% & 5.04\% & +0.04\% \\
+                    3.0\% & 2.98\% & -0.02\% \\
+                    \bottomrule
+                \end{tabular}
+            \end{center}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{🎥 시연 영상 재생}
+                
+                \begin{tikzpicture}[scale=0.8]
+                    % 비디오 프레임
+                    \draw[thick] (0,0) rectangle (4,3);
+                    \node at (2,1.5) {\Huge ▶};
+                    \node[below] at (2,0) {실시간 농도 제어 시연};
+                    
+                    % 강조점들
+                    \node[text width=4cm, font=\small] at (2,-1) {
+                        • 자동 제어된 주전자 기울기\\
+                        • 실시간 농도 피드백\\
+                        • 
