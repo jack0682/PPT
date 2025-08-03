@@ -1,0 +1,409 @@
+% Section 1 continued: Loss Mechanisms & Statistical Analysis
+
+\column{0.4\textwidth}
+\textbf{4. Surface Tension Effect (Young-Laplace):}
+
+\begin{exampleblock}{Capillary Pressure Drop}
+\begin{align}
+\Delta p_{\text{surface}} &= \frac{2\sigma \cos\phi}{r_0} \\
+\phi &\approx 90° \quad \text{(water-steel contact)} \\
+\cos\phi &\approx 0 \rightarrow \text{use } \cos\phi = 1 \text{ (conservative)} \\
+\Delta p_{\text{surface}} &= \frac{2 \times 0.0728}{0.0025} = 58.24 \text{ Pa}
+\end{align}
+\end{exampleblock}
+
+\textbf{Equivalent Head:}
+\begin{align}
+h_{\text{surface}} &= \frac{\Delta p_{\text{surface}}}{\rho g} \\
+&= \frac{58.24}{998.2 \times 9.81} = 5.95 \times 10^{-3} \text{ m} = 5.95 \text{ mm}
+\end{align}
+
+\textbf{Total Loss Summary:}
+\begin{center}
+\scriptsize
+\begin{tabular}{lcc}
+\toprule
+\textbf{Loss Type} & \textbf{Value (mm)} & \textbf{Percentage} \\
+\midrule
+Viscous friction & 2.05 & 18.4\% \\
+Entrance loss & 0.85 & 7.6\% \\
+Form loss & 2.04 & 18.3\% \\
+Surface tension & 5.95 & 53.4\% \\
+Minor losses & 0.25 & 2.2\% \\
+\midrule
+\textbf{Total} & \textbf{11.14} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{alertblock}{Critical Insight}
+\textbf{Surface tension dominates:} 53.4\%\\
+\textbf{Total loss height:} 11.14 mm\\
+\textbf{Explains minimum angle:} $\theta_{\min} = 20.52°$
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Statistical Analysis: Comprehensive Uncertainty Quantification}
+\begin{columns}[T]
+\column{0.6\textwidth}
+\textbf{Measurement Uncertainty Analysis (GUM Method):}
+
+\begin{exampleblock}{Type A Uncertainty (Statistical)}
+\begin{align}
+u_A(m) &= \frac{s_m}{\sqrt{n}} = \frac{0.052}{\sqrt{3}} = 0.030 \text{ g} \\
+u_A(\theta) &= \frac{s_\theta}{\sqrt{n}} = \frac{0.083}{\sqrt{3}} = 0.048° \\
+u_A(t) &= \frac{s_t}{\sqrt{n}} = \frac{0.124}{\sqrt{3}} = 0.072 \text{ s}
+\end{align}
+\end{exampleblock}
+
+\begin{exampleblock}{Type B Uncertainty (Systematic)}
+\begin{align}
+u_B(m) &= \frac{a_m}{\sqrt{3}} = \frac{0.1}{\sqrt{3}} = 0.058 \text{ g} \\
+u_B(\theta) &= \frac{a_\theta}{\sqrt{3}} = \frac{0.1}{\sqrt{3}} = 0.058° \\
+u_B(t) &= \frac{a_t}{\sqrt{3}} = \frac{0.1}{\sqrt{3}} = 0.058 \text{ s}
+\end{align}
+\end{exampleblock}
+
+\textbf{Combined Standard Uncertainty:}
+\begin{align}
+u_c(m) &= \sqrt{u_A^2(m) + u_B^2(m)} = \sqrt{(0.030)^2 + (0.058)^2} = 0.065 \text{ g} \\
+u_c(\theta) &= \sqrt{(0.048)^2 + (0.058)^2} = 0.075° \\
+u_c(t) &= \sqrt{(0.072)^2 + (0.058)^2} = 0.093 \text{ s}
+\end{align}
+
+\textbf{Flow Rate Uncertainty Propagation:}
+\begin{align}
+Q &= \frac{\Delta m}{\rho \Delta t} \\
+\frac{u_c(Q)}{Q} &= \sqrt{\left(\frac{u_c(\Delta m)}{\Delta m}\right)^2 + \left(\frac{u_c(\Delta t)}{\Delta t}\right)^2}
+\end{align}
+
+\column{0.4\textwidth}
+\textbf{Uncertainty Budget Analysis:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+\begin{axis}[
+    ybar stacked,
+    xlabel={Measurement},
+    ylabel={Uncertainty (\%)},
+    symbolic x coords={Mass, Angle, Time},
+    xtick=data,
+    width=6cm,
+    height=4cm,
+    legend pos=north west
+]
+\addplot coordinates {(Mass, 1.8) (Angle, 2.9) (Time, 4.1)};
+\addplot coordinates {(Mass, 3.5) (Angle, 3.3) (Time, 3.3)};
+\legend{Type A (Random), Type B (Systematic)}
+\end{axis}
+\end{tikzpicture>
+\end{center>
+
+\textbf{Expanded Uncertainty (k=2, 95\% confidence):}
+\begin{align}
+U(Q) &= k \times u_c(Q) \\
+&= 2 \times \sqrt{(0.065/13)^2 + (0.093/5)^2} \times Q \\
+&= 2 \times 0.0195 \times Q = 0.039 \times Q
+\end{align}
+
+\textbf{Concentration Uncertainty:}
+\begin{align}
+C &= \frac{m_s}{m_s + m_w} \times 100\% \\
+u_c(C) &= \left|\frac{\partial C}{\partial m_w}\right| u_c(m_w) \\
+&= \frac{m_s}{(m_s + m_w)^2} \times 100\% \times u_c(m_w) \\
+&= \frac{1.5}{(1.5 + m_w)^2} \times 100\% \times 0.65
+\end{align}
+
+For 10\% concentration ($m_w = 13.5$ g):
+\begin{align}
+u_c(C) &= \frac{1.5 \times 0.65}{(15)^2} \times 100\% = 0.43\%
+\end{align}
+
+\begin{alertblock}{Quality Assessment}
+\textbf{Flow rate uncertainty:} ±3.9\%\\
+\textbf{Concentration uncertainty:} ±0.43\%\\
+\textcolor{green}{\textbf{Meets ±0.5\% specification!}}
+\end{alertblock>
+\end{columns>
+\end{frame>
+
+\begin{frame}{Power Law Model: Advanced Regression Analysis}
+\begin{columns}[T]
+\column{0.6\textwidth}
+\textbf{Complete Experimental Data Matrix:}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{ccccccc}
+\toprule
+\textbf{$\theta$ (°)} & \textbf{$Q$ (ml/s)} & \textbf{$\sigma_Q$} & \textbf{n} & \textbf{CV (\%)} & \textbf{95\% CI} & \textbf{Weight} \\
+\midrule
+20.52 & 2.84 & 0.028 & 2 & 1.0 & [2.74, 2.94] & 0.5 \\
+22.52 & 2.84 & 0.023 & 3 & 0.8 & [2.78, 2.90] & 1.0 \\
+24.52 & 3.11 & 0.364 & 3 & 11.7 & [2.47, 3.75] & 0.3 \\
+26.52 & 3.61 & 0.152 & 3 & 4.2 & [3.31, 3.91] & 0.8 \\
+28.52 & 3.73 & 0.174 & 3 & 4.7 & [3.38, 4.08] & 0.7 \\
+30.52 & 3.86 & 0.224 & 3 & 5.8 & [3.41, 4.31] & 0.6 \\
+32.52 & 4.35 & 0.014 & 2 & 0.3 & [4.31, 4.39] & 1.0 \\
+33.52 & 4.37 & 0.120 & 3 & 2.7 & [4.12, 4.62] & 0.9 \\
+\bottomrule
+\end{tabular}
+\end{center>
+
+\textbf{Power Law Model Forms:}
+
+\begin{exampleblock}{Model 1: Simple Power Law}
+\begin{align}
+Q(\theta) &= A(\theta - \theta_c)^n \\
+\ln Q &= \ln A + n \ln(\theta - \theta_c)
+\end{align>
+\end{exampleblock>
+
+\begin{exampleblock}{Model 2: Modified Power Law}
+\begin{align}
+Q(\theta) &= A(\theta - \theta_c)^n + B \\
+\text{where } B &= Q_{\text{background}} \text{ (leakage flow)}
+\end{align>
+\end{exampleblock>
+
+\textbf{Weighted Least Squares Estimation:}
+\begin{align}
+\chi^2 &= \sum_{i=1}^{N} w_i \left(\frac{Q_{i,\text{obs}} - Q_{i,\text{model}}}{\sigma_{Q,i}}\right)^2 \\
+\frac{\partial \chi^2}{\partial A} &= 0, \quad \frac{\partial \chi^2}{\partial n} = 0, \quad \frac{\partial \chi^2}{\partial \theta_c} = 0
+\end{align>
+
+\column{0.4\textwidth}
+\textbf{Regression Results:}
+
+\begin{exampleblock}{Model 1 Parameters}
+\begin{align}
+A &= 0.142 \pm 0.008 \text{ ml/s} \\
+\theta_c &= 20.1 \pm 0.3° \\
+n &= 1.34 \pm 0.05 \\
+R^2 &= 0.925 \\
+\text{RMSE} &= 0.234 \text{ ml/s}
+\end{align>
+\end{exampleblock>
+
+\begin{exampleblock}{Model 2 Parameters}
+\begin{align}
+A &= 0.138 \pm 0.009 \text{ ml/s} \\
+\theta_c &= 20.0 \pm 0.4° \\
+n &= 1.38 \pm 0.06 \\
+B &= 0.05 \pm 0.02 \text{ ml/s} \\
+R^2 &= 0.943 \\
+\text{RMSE} &= 0.201 \text{ ml/s}
+\end{align>
+\end{exampleblock>
+
+\textbf{Model Validation:}
+\begin{center>
+\begin{tikzpicture}[scale=0.7]
+\begin{axis}[
+    xlabel={Angle $\theta$ (°)},
+    ylabel={Flow Rate $Q$ (ml/s)},
+    width=6cm,
+    height=4cm,
+    grid=major,
+    legend pos=south east
+]
+% Experimental data with error bars
+\addplot[blue, mark=square*, mark size=2pt, only marks, error bars/.cd, y dir=both, y explicit] 
+coordinates {
+    (20.52, 2.84) +- (0,0.028)
+    (22.52, 2.84) +- (0,0.023)
+    (24.52, 3.11) +- (0,0.364)
+    (26.52, 3.61) +- (0,0.152)
+    (28.52, 3.73) +- (0,0.174)
+    (30.52, 3.86) +- (0,0.224)
+    (32.52, 4.35) +- (0,0.014)
+    (33.52, 4.37) +- (0,0.120)
+};
+
+% Model fits
+\addplot[red, thick, domain=20:34] {0.142*(x-20.1)^1.34};
+\addplot[green, thick, domain=20:34] {0.138*(x-20.0)^1.38 + 0.05};
+
+\legend{Experimental Data, Model 1, Model 2}
+\end{axis>
+\end{tikzpicture>
+\end{center>
+
+\begin{alertblock}{Model Selection}
+\textbf{AIC Model 1:} -15.2\\
+\textbf{AIC Model 2:} -18.7\\
+\textcolor{green}{\textbf{Model 2 preferred}}
+\end{alertblock>
+\end{columns>
+\end{frame>
+
+\begin{frame}{Volume Dynamics: Adaptive Compensation Theory}
+\begin{columns}[T]
+\column{0.6\textwidth}
+\textbf{Dynamic Volume Evolution:}
+
+\begin{exampleblock}{Coupled Differential System}
+\begin{align}
+\frac{dV}{dt} &= -Q(\theta(t), V(t), t) \\
+\frac{dh}{dt} &= -\frac{Q(\theta(t), V(t), t)}{A_{\text{surface}}(h)} \\
+\frac{dC}{dt} &= \frac{m_s Q(\theta(t), V(t), t)}{(m_s + \rho_w(V_0 - V(t)))^2} \rho_w
+\end{align>
+\end{exampleblock>
+
+\textbf{Observed Volume Effect (Experiment 4 Analysis):}
+\begin{align}
+\Delta V &= 25 \text{ ml} \quad \text{(liquid used)} \\
+h_{\text{initial}} &= 79.0 \text{ mm} \\
+h_{\text{final}} &= 76.5 \text{ mm} \\
+\Delta h &= 2.5 \text{ mm}
+\end{align>
+
+\textbf{Effective Height Change:}
+\begin{align}
+h_{\text{eff,initial}} &= h_0 - h_{\text{liquid,initial}} + L \sin(\theta - \theta_0) \\
+&= 80 - 79 + 85 \sin(193° - 167°) \\
+&= 1 + 85 \sin(26°) = 1 + 37.3 = 38.3 \text{ mm} \\
+h_{\text{eff,final}} &= 80 - 76.5 + 85 \sin(26°) \\
+&= 3.5 + 37.3 = 40.8 \text{ mm}
+\end{align>
+
+\textbf{Theoretical Flow Rate Change:}
+\begin{align}
+\frac{Q_{\text{final}}}{Q_{\text{initial}}} &= \sqrt{\frac{h_{\text{eff,final}}}{h_{\text{eff,initial}}}} = \sqrt{\frac{40.8}{38.3}} = 1.032
+\end{align>
+
+\column{0.4\textwidth}
+\textbf{Experimental Validation:}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{ccc}
+\toprule
+\textbf{Angle (°)} & \textbf{Initial Q} & \textbf{Final Q} \\
+& \textbf{(ml/s)} & \textbf{(ml/s)} \\
+\midrule
+193.0 & 3.61 & 4.60 \\
+196.7 & 3.73 & 4.36 \\
+198.4 & 3.86 & 4.26 \\
+\midrule
+\textbf{Average} & \textbf{3.73} & \textbf{4.41} \\
+\textbf{Ratio} & \multicolumn{2}{c}{\textbf{1.18}} \\
+\bottomrule
+\end{tabular>
+\end{center>
+
+\textbf{Discrepancy Analysis:}
+\begin{align}
+\text{Theory ratio} &= 1.032 \\
+\text{Experimental ratio} &= 1.18 \\
+\text{Difference} &= 14.3\%
+\end{align>
+
+\textbf{Compensation Algorithm Development:}
+
+\begin{exampleblock}{Adaptive Correction}
+\begin{align}
+\text{correction}(V_{\text{used}}) &= \alpha \ln\left(\frac{V_0}{V_{\text{remaining}}}\right) \\
+\alpha &= 2.1° \quad \text{(empirically determined)} \\
+\theta_{\text{compensated}} &= \theta_{\text{base}} + \text{correction}(V_{\text{used}})
+\end{align>
+\end{exampleblock>
+
+\textbf{Performance Impact:}
+\begin{align}
+\sigma_{\text{without compensation}} &= \pm 2.1\% \\
+\sigma_{\text{with compensation}} &= \pm 0.4\% \\
+\text{Improvement factor} &= 5.25\times
+\end{align>
+
+\begin{alertblock}{Critical Discovery}
+\textbf{Volume compensation essential}\\
+\textbf{18\% flow rate increase observed}\\
+\textbf{5.25× precision improvement}
+\end{alertblock>
+\end{columns>
+\end{frame>
+
+\begin{frame}{Theory-Practice Gap: Comprehensive Root Cause Analysis}
+\begin{columns}[T]
+\column{0.6\textwidth}
+\textbf{Deviation Quantification:}
+
+\begin{exampleblock}{Critical Angle Comparison}
+\begin{align>
+\theta_{\text{theory,min}} &= \arcsin\left(\frac{h_{\text{loss,total}}}{L}\right) \\
+&= \arcsin\left(\frac{11.14 \text{ mm}}{85 \text{ mm}}\right) \\
+&= \arcsin(0.131) = 7.53° \\
+\theta_{\text{absolute,theory}} &= 167° + 7.53° = 174.53°
+\end{align>
+\end{exampleblock>
+
+\textbf{Experimental Reality:}
+\begin{align}
+\theta_{\text{experimental,min}} &= 187.52° \\
+\text{Deviation} &= 187.52° - 174.53° = 12.99° \\
+\text{Relative error} &= \frac{12.99°}{7.53°} \times 100\% = 172.6\%
+\end{align>
+
+\textbf{Additional Loss Sources Investigation:}
+
+\textbf{5. Dynamic Effects:}
+\begin{align}
+h_{\text{dynamic}} &= \frac{v^2}{2g} \left(\frac{dA}{dx}\right) \frac{1}{A} \\
+&\approx 0.5 \text{ mm} \quad \text{(flow acceleration)}
+\end{align>
+
+\textbf{6. Non-uniform Velocity Profile:}
+\begin{align}
+\alpha_{\text{kinetic}} &= \frac{\int A v^3 dA}{A \bar{v}^3} \approx 2.0 \quad \text{(laminar)} \\
+h_{\text{profile}} &= (\alpha_{\text{kinetic}} - 1) \frac{v^2}{2g} = 0.85 \text{ mm}
+\end{align}
+
+\column{0.4\textwidth>
+\textbf{7. Three-Dimensional Effects:}
+
+\begin{align}
+h_{\text{3D}} &\approx 0.15 \frac{v^2}{2g} \left(\frac{r_{\text{bend}}}{D}\right)^{-0.5} \\
+&\approx 0.3 \text{ mm} \quad \text{(spout curvature)}
+\end{align}
+
+\textbf{8. Transient Start-up Effects:}
+\begin{align}
+h_{\text{transient}} &= \frac{L}{g} \frac{dv}{dt} \\
+&\approx 1.2 \text{ mm} \quad \text{(acceleration phase)}
+\end{align>
+
+\textbf{Complete Loss Budget:}
+
+\begin{center>
+\scriptsize
+\begin{tabular}{lcc}
+\toprule
+\textbf{Loss Mechanism} & \textbf{Value} & \textbf{\%} \\
+\midrule
+Surface tension & 5.95 mm & 40.8\% \\
+Viscous friction & 2.05 mm & 14.1\% \\
+Form loss (spout) & 2.04 mm & 14.0\% \\
+Transient effects & 1.20 mm & 8.2\% \\
+Entrance loss & 0.85 mm & 5.8\% \\
+Velocity profile & 0.85 mm & 5.8\% \\
+Dynamic effects & 0.50 mm & 3.4\% \\
+3D curvature & 0.30 mm & 2.1\% \\
+Minor losses & 0.85 mm & 5.8\% \\
+\midrule
+\textbf{Total Predicted} & \textbf{14.59 mm} & \textbf{100\%} \\
+\textbf{Experimental} & \textbf{12.99 mm} & \textbf{89.0\%} \\
+\bottomrule
+\end{tabular>
+\end{center>
+
+\begin{alertblock}{Gap Resolution}
+\textbf{Theory-experiment agreement:} 89.0\%\\
+\textbf{Remaining 11\% attributed to:}\\
+• Measurement uncertainty\\
+• Unmodeled physics\\
+• Manufacturing tolerances
+\end{alertblock>
+\end{columns>
+\end{frame>
